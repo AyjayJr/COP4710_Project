@@ -3,19 +3,52 @@
   box-sizing: border-box;
 }
 
+ul {
+ list-style-type: none;
+ margin: 0;
+ padding: 0;
+}
+
+ul li a {
+  text-decoration: none;
+}
+
 /* Content wrap */
 .content-wrap {
   /* Responsive content */
   width: 85%;
   margin: auto;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 /* List-wrap */
 .list-wrap {
-  width: 30%;
-  margin: auto;
+  margin: 0 auto;
   overflow: hidden;
+}
+
+#nav-bar {
+  background: #333
+}
+
+#nav-bar__links {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+#nav-bar__links li {
+  border-right: 1px solid #bbb;
+}
+
+#nav-bar__links li a {
+  display: block;
+  padding: 20px;
+  color: white;
+}
+
+#nav-bar__links li a:hover {
+  background-color: #111;
 }
 
 /* Search Lists */
@@ -45,7 +78,6 @@
   margin-top: -1px; /* Prevent double borders */
   background-color: #f6f6f6; /* Grey background color */
   padding: 12px; /* Add some padding */
-  text-decoration: none; /* Remove default text underline */
   font-size: 18px; /* Increase the font-size */
   color: black; /* Add a black text color */
   display: block; /* Make it into a block element to fill the whole list */

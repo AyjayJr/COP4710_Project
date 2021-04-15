@@ -23,15 +23,19 @@
     {{ form.media }}
 </head>
 
-<body>
-    <input type="button" id="top" onclick="location.href='{% url 'home' %}';" value="Home"/>
-    {% if user.is_authenticated %}
-        <input type="button" id="top" onclick="location.href='{% url 'accounts_view' user.id %}';" value="My account"/>
-        <input type="button" id="top" onclick="location.href='{% url 'accounts_logout' %}';" value="Logout"/>
-    {% else %}
-        <input type="button" id="top" onclick="location.href='{% url 'accounts_login' %}';" value="Login"/>
-        <input type="button" id="top" onclick="location.href='{% url 'accounts_signup' %}';" value="Sign up"/>
-    {% endif %}
+<body class="content-wrap">
+    <header id="nav-bar">
+        <ul id="nav-bar__links">
+            <li><a href='{% url 'home' %}'>Home</a></li>
+            {% if user.is_authenticated %}
+            <li><a href='{% url 'accounts_view' user.id %}'>My account</a></li>
+            <li><a href='{% url 'accounts_logout' %}'>Logout</a></li>
+            {% else %}
+            <li><a href='{% url 'accounts_login' %}'>Login</a></li>
+            <li><a href='{% url 'accounts_signup' %}'>Signup</a></li>
+            {% endif %}
+        </ul>
+    </header>
     {% block content %}{% endblock content %}
 </body>
 </html>
