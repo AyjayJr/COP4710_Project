@@ -38,7 +38,7 @@ class CreateLocationForm(forms.ModelForm):
         model = Location
         exclude = ("latitude", "longitude", "image")
 
-    def save(self, commit=True):
+    def save(self, **kwargs):
         instance = super().save(commit=False)
         point = cast(Point, GEOSGeometry(self.cleaned_data["point"]))
         instance.longitude, instance.latitude = point.x, point.y
@@ -48,8 +48,6 @@ class CreateLocationForm(forms.ModelForm):
         fname = (MEDIA_ROOT / "location" / f"{instance.longitude}|{instance.latitude}").with_suffix(".png")
         download(GoogleStaticMapWidget().get_image_url(point), fname)
         instance.image = "location/" + fname.name
-        if commit:
-            instance.save()
         return instance
 
 

@@ -12,11 +12,15 @@ class GetFieldsMixin:
         return [(field.verbose_name, field.value_from_object(self)) for field in self.__class__._meta.fields]
 
 
+def loc_image_upload_to(instance, filename):
+    return f"location/{instance.id}{Path(filename).suffix}"
+
+
 class Location(GetFieldsMixin, models.Model):
     id = models.AutoField(db_column="location_id", primary_key=True)
     longitude = models.FloatField(db_column="longitude", blank=False, null=False)
     latitude = models.FloatField(db_column="latitude", blank=False, null=False)
-    image = models.ImageField(db_column="image", blank=False, null=False)
+    image = models.ImageField(db_column="image", blank=False, null=False, upload_to=loc_image_upload_to)
 
     class Meta:
         db_table = "location"
