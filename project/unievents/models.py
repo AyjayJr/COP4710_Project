@@ -12,15 +12,11 @@ class GetFieldsMixin:
         return [(field.verbose_name, field.value_from_object(self)) for field in self.__class__._meta.fields]
 
 
-def loc_image_upload_to(instance, filename):
-    return f"location/{instance.id}{Path(filename).suffix}"
-
-
 class Location(GetFieldsMixin, models.Model):
     id = models.AutoField(db_column="location_id", primary_key=True)
     longitude = models.FloatField(db_column="longitude", blank=False, null=False)
     latitude = models.FloatField(db_column="latitude", blank=False, null=False)
-    image = models.ImageField(db_column="image", blank=False, null=False, upload_to=loc_image_upload_to)
+    image = models.ImageField(db_column="image", blank=False, null=False)
 
     class Meta:
         db_table = "location"
@@ -130,7 +126,7 @@ class Event(GetFieldsMixin, models.Model):
             rso_specific_query |= Q(rso_id=rso.id)
         query = (
             Q(privacy_level=cls.PrivacyLevel.Public.value)
-            | Q(privacy_level=cls.PrivacyLevel.University_Private.value, university_id=user.university_id)
+            | Q(privacy_level=cls.PrivacyLevel.University_Private.value, university_id=user.university.id)
             | rso_specific_query
         )
         print(rso_specific_query)
