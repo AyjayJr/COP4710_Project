@@ -126,7 +126,7 @@ class Event(GetFieldsMixin, models.Model):
             rso_specific_query |= Q(rso_id=rso.id)
         query = (
             Q(privacy_level=cls.PrivacyLevel.Public.value)
-            | Q(privacy_level=cls.PrivacyLevel.University_Private.value, university_id=user.university_id)
+            | Q(privacy_level=cls.PrivacyLevel.University_Private.value, university_id=user.university.id)
             | rso_specific_query
         )
         print(rso_specific_query)

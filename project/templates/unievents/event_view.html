@@ -11,7 +11,15 @@
     <p>Location: </br> <img src="{{ event.location.image.url }}" alt="Location has not loaded"/></p>
     <p>Start time: {{event.dtstart.isoformat}}</p>
     <p>End time: {{ event.dtend.isoformat }}</p>
-    <p>RRULE:FREQ={{event.freq}};UNTIL={{event.until.isoformat}};BYDAY={{event.byday}}</p>
+    {% ifnotequal event.freq "ONCE" %}
+        <p>
+        RRULE:FREQ={{event.freq}};
+        UNTIL={{event.until.isoformat}};
+        {% if event.byday %}
+            BYDAY=<a id="byday"></a>
+        {% endif %}
+        </p>
+    {% endifnotequal %}
     
     <h3> Comments </h3>
     <ul>
@@ -43,4 +51,13 @@
             <li>No comments yet.</li>
         {% endfor %}
     </ul>
+
+    <script>
+        jQuery(document).ready(function () {
+            {% if event.byday %}
+                let byday = [{% for d in event.byday %} "{{d}}", {% endfor %}]
+                jQuery('#byday').text(byday.join(", "))
+            {% endif %}
+        });
+    </script>
 {% endblock %}

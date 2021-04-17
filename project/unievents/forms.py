@@ -1,4 +1,4 @@
-from typing import Type, Union, cast
+from typing import cast
 
 from django.core.exceptions import ValidationError
 from accounts.models import User
@@ -38,18 +38,18 @@ class CreateLocationForm(forms.ModelForm):
         model = Location
         exclude = ("latitude", "longitude", "image")
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
+    def save(self, **kwargs):
         point = cast(Point, GEOSGeometry(self.cleaned_data["point"]))
-        instance.longitude, instance.latitude = point.x, point.y
         existing_locations = self.Meta.model.objects.filter(longitude=point.x, latitude=point.y)
         if len(existing_locations):
             return existing_locations[0]
-        fname = (MEDIA_ROOT / "location" / f"{instance.longitude}|{instance.latitude}").with_suffix(".png")
+        instance = super().save(commit=False)
+        instance.longitude, instance.latitude = point.x, point.y
+        instance.save()
+        fname = (MEDIA_ROOT / "location" / f"{instance.id}").with_suffix(".png")
         download(GoogleStaticMapWidget().get_image_url(point), fname)
         instance.image = "location/" + fname.name
-        if commit:
-            instance.save()
+        instance.save()
         return instance
 
 

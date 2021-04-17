@@ -1,20 +1,20 @@
-from typing import Any, Dict, Type, Union, cast
+from typing import Any, Dict, Type, cast
+
+from accounts.models import User
+from accounts.views import SuperAdminRequiredMixin, login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.db import models
-from django.forms.models import inlineformset_factory
-from django.http.response import Http404, HttpResponseNotAllowed
-from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpRequest
+from django.http.response import Http404, HttpResponseNotAllowed
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from accounts.views import SuperAdminRequiredMixin, login_required, super_admin_required
-from accounts.models import User
-from unievents.forms import CreateEventForm, CreateLocationForm, CreateRSOForm, CreateUniversityForm
-from django.core.exceptions import PermissionDenied
-from django.views.generic import CreateView
-from django.urls import reverse_lazy
 
-from unievents.models import Comment, Event, Location, Tag, RSO, University
-from django.contrib.auth.mixins import LoginRequiredMixin
+from unievents.forms import CreateEventForm, CreateRSOForm, CreateUniversityForm
+from unievents.models import RSO, Comment, Event, Tag, University
 
 
 def being_a_student_required(func):
