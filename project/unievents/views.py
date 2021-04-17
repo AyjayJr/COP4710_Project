@@ -1,5 +1,7 @@
 from typing import Any, Dict, Type, cast
 
+from django.db.models.query_utils import Q
+
 from accounts.models import User
 from accounts.views import SuperAdminRequiredMixin, login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -15,6 +17,15 @@ from django.views.generic.list import ListView
 
 from unievents.forms import CreateEventForm, CreateRSOForm, CreateUniversityForm
 from unievents.models import RSO, Comment, Event, Tag, University
+
+from datetime import datetime
+import calendar
+
+WEEKDAYS = calendar.weekheader(2).upper().split()
+
+
+class Request(HttpRequest):
+    user: User
 
 
 def being_a_student_required(func):
@@ -144,13 +155,12 @@ def join_rso_view(request, rso):
 
 @post_requests_only
 @get_by_pk_decorator(RSO)
-def leave_rso_view(request, rso):
-    user: User = request.user
-    if user.is_admin(rso.id):
+def leave_rso_view(request: Request, rso):
+    if request.user.is_admin(rso.id):
         raise PermissionError("Admin of an RSO cannot leave it.")
     # Only RSO members can leave it
-    get_object_or_404(user.rso_memberships, pk=rso.id)
-    user.rso_memberships.remove(rso)
+    get_object_or_404(request.user.rso_memberships, pk=rso.id)
+    request.user.rso_memberships.remove(rso)
     return redirect("rso_view", rso.id)
 
 
@@ -169,7 +179,7 @@ def create_event_view(request, rso):
     elif request.method == "POST":
         if form.is_valid():
             event = form.save()
-            return redirect("event_view", event.id)
+            return redirect("events_view", event.id)
         else:
             return render(request, "unievents/event_create.html", context)
     else:
@@ -182,7 +192,7 @@ class EventView(LoginRequiredMixin, DetailView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        event: Event = self.get_object()
+        event: Event = cast(Event, self.get_object())
         if (event.privacy_level == Event.PrivacyLevel.RSO_Private and not event.rso in user.rso_memberships.all()) or (
             event.privacy_level == Event.PrivacyLevel.University_Private and user.university_id != event.university_id
         ):
@@ -199,11 +209,46 @@ def create_comment_view(request, event):
         text=request.POST["text"],
         rating=request.POST["rating"],
     ).save()
-    return redirect("event_view", event.id)
+    return redirect("events_view", event.id)
 
 
 @login_required()
-def event_list_view(request):
-    user: User = request.user
-    context = {"filtered_events": Event.safe_filter(user)}
-    return render(request, "unievents/event_list.html", context)
+def event_list_view(request: Request, year=None, month=None, day=None, upcoming=False):
+    if upcoming:
+        date = datetime(year, month, day)
+        query = Q(until__isnull=True, dtend__gt=date) | Q(until__isnull=False, until__gte=date)
+        template = "unievents/event_list/upcoming.html"
+    elif day is not None:
+        date = datetime(year, month, day)
+        weekday = WEEKDAYS[date.weekday()]
+        query = Q(until__isnull=True, dtend__date=date) | (
+            ~Q(freq=Event.Frequency.Weekly) & Q(until__isnull=False, until__gte=date)
+            | Q(freq=Event.Frequency.Weekly, byday__contains=weekday)
+        )
+        template = "unievents/event_list/day.html"
+    elif month is not None:
+        query = Q(until__isnull=True, dtend__year=year, dtend__month=month) | Q(
+            until__isnull=False, until__year__gte=year, until__month__gte=month
+        )
+
+        template = "unievents/event_list/month.html"
+    elif year is not None:
+        query = Q(until__isnull=True, dtend__year=year) | Q(until__isnull=False, until__year__gte=year)
+        template = "unievents/event_list/year.html"
+    else:
+        template = "unievents/event_list/search.html"
+        searched_summary = request.GET.get("summary", None)
+        if searched_summary is not None:
+            query = Q(summary__icontains=searched_summary)
+        else:
+            date = datetime.now()
+            return redirect("events_list", date.year, date.month, date.day)
+
+    return render(
+        request,
+        template,
+        {
+            "today": datetime.today(),
+            "filtered_events": Event.safe_filter(request.user, query),
+        },
+    )

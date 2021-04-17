@@ -26,15 +26,15 @@
         </form>
     {% endif %}
     <h3> Events </h3>
-    <input type="text" id="event_input" class="search__bar" onkeyup="searchDBEntity('event_input','event_list')" placeholder="Search..">
-    <ul id="event_list" class="search__list">
+    <input type="text" id="event_input" class="search__bar" onkeyup="searchDBEntity('event_input','events_list')" placeholder="Search..">
+    <ul id="events_list" class="search__list">
         {% for event in filtered_events.all %}
-            <li><a href="{% url 'event_view' event.id %}">{{ event.summary }}</a></li>
+            <li><a href="{% url 'events_view' event.id %}">{{ event.summary }}</a></li>
         {% empty %}
             <li>No events yet.</li>
         {% endfor %}
     </ul>
     {% if is_admin %}
-        <input type="button" onclick="location.href='{% url 'event_create' rso.id %}';" value="Create event" />
+        <input type="button" onclick="location.href='{% url 'events_create' rso.id %}';" value="Create event" />
     {% endif %}
 {% endblock %}
