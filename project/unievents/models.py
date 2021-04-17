@@ -120,17 +120,17 @@ class Event(GetFieldsMixin, models.Model):
         return ", ".join(t.text for t in self.tags.all())
 
     @classmethod
-    def safe_filter(cls, user: User, **kwargs):
+    def safe_filter(cls, user: User, query=None, **kwargs):
         rso_specific_query = Q()
         for rso in user.rso_memberships.all():
             rso_specific_query |= Q(rso_id=rso.id)
-        query = (
+
+        privacy_level_checks = (
             Q(privacy_level=cls.PrivacyLevel.Public.value)
             | Q(privacy_level=cls.PrivacyLevel.University_Private.value, university_id=user.university.id)
             | rso_specific_query
         )
-        print(rso_specific_query)
-        print(query)
+        query = privacy_level_checks if query is None else privacy_level_checks & query
         return cls.objects.filter(query, **kwargs)
 
 

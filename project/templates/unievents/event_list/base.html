@@ -1,0 +1,9 @@
+<a href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
+<a href="{% url "events_list" today.year today.month today.day %}">Day View</a>
+<a href="{% url "events_list" today.year today.month %}">Week View</a>
+<a href="{% url "events_list" today.year today.month %}">Month View</a>
+<a href="{% url "events_list" today.year today.month %}">Year View</a>
+<form style="display: inline-block; align-self: end;" method="GET" action="{% url 'events_list' %}">
+    <input type="text" name="summary" placeholder="Search all events, calendars">
+    <button type="submit">Search</button>
+</form>
