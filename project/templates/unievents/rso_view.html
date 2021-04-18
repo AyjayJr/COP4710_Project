@@ -27,7 +27,7 @@
     {% endif %}
     <h3> Events </h3>
     <input type="text" id="event_input" class="search__bar" onkeyup="searchDBEntity('event_input','events_list')" placeholder="Search..">
-    <ul id="events_list" class="search__list">
+    <ul id="event_list" class="search__list">
         {% for event in filtered_events.all %}
             <li><a href="{% url 'events_view' event.id %}">{{ event.summary }}</a></li>
         {% empty %}

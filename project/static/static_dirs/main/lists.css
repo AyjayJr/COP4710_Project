@@ -115,7 +115,8 @@ ul li a {
 }
 
 #events_list {
-  height: 600px;
+  height: 100%;
+  width: 80%;
 }
 
 #events_list li a {
@@ -130,4 +131,24 @@ ul li a {
 
 #events_list li a div{
   padding: 0 12px 12px;
+}
+
+#event_area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+}
+
+#tag_box {
+  background: #f6f6f6;
+  width: 18%;
+  height: 30vh;
+  overflow-y: auto;
+}
+
+.event-wrap {
+  width: 80%;
+  height: 70vh;
+  margin: auto;
 }

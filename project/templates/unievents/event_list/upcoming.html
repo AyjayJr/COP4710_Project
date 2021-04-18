@@ -14,4 +14,10 @@
     {% endfor %}
     </ul>
 </div>
+
+<script>
+  let tags_for_a_particular_event = [{%for t in event.tags %} "{{t}}", {% endfor %}];
+
+</script>
+
 {% endblock %}
