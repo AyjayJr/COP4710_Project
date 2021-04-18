@@ -5,10 +5,10 @@
 <div class="content-wrap">
     <h1>Events</h1>
 
-    <input type="text" id="events_input" class="search__bar" onkeyup="searchDBEntity('events_input', 'events_list')" placeholder="Search..">
+    <input type="text" id="events_input" class="search__bar" onkeyup="searchDBEntityWithTags('events_input', 'events_list')" placeholder="Search..">
     <ul id="events_list" class="search__list">
     {% for event in filtered_events %}
-        <li><a href="{% url 'events_view' event.id %}">{{ event.summary }}</a></li>
+        <li data-tags="{{event.formatted_tags}}"><a href="{% url 'events_view' event.id %}">{{ event.summary }}</a></li>
     {% empty %}
         <li>No events found.</li>
     {% endfor %}
