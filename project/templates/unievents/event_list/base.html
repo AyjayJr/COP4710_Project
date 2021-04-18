@@ -1,3 +1,4 @@
+
 <div class="content-wrap">
   <div id="event-view">
     <a class="view-btn" href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
@@ -13,3 +14,54 @@
     </form>
   </div>
 </div>
+<script>
+    const clickedTags = new Set()
+    const availableTags = new Set()
+
+    function allTagsMatch(tags) {
+        for (let tag of clickedTags) {
+            if (!tags.includes(tag))
+                return false;
+        }
+        return true;
+    }
+    function searchDBEntityWithTags(input_id, input_list) {
+        let filter = document.getElementById(input_id).value.toUpperCase();
+        let li = document.getElementById(input_list).getElementsByTagName('li');
+
+        // Loop through all list items, and hide those who don't match the search query
+        for (let i = 0; i < li.length; i++) {
+            let elemTags = li[i].getAttribute("data-tags")
+            let a = li[i].getElementsByTagName("a")[0];
+            let txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1 && allTagsMatch(elemTags))
+                li[i].style.display = "";
+            else
+                li[i].style.display = "none";
+        }
+    }
+    function clickTag(tagName) {
+        if (clickedTags.has(tagName)) {
+            clickedTags.delete(tagName);
+            jQuery(`#${tagName}`).attr("style", "background-color: white;")
+        }
+        else {
+            clickedTags.add(tagName);
+            jQuery(`#${tagName}`).attr("style", "background-color: red;")
+        }
+        searchDBEntityWithTags('events_input', 'events_list')
+    }
+    jQuery(document).ready(function () {
+        {% for event in filtered_events %}
+            {% for tag in event.formatted_tags.split %}
+                availableTags.add("{{tag}}".replace(",", ""));
+            {% endfor %}
+        {% endfor %}
+        console.log(availableTags)
+        jQuery("body").append("<h2>Tags</h2><ul id='taglist'></ul>")
+        let taglist = jQuery("#taglist")
+        for (let tag of availableTags)
+            taglist.append(`<li><button id="${tag}" style="background-color: white;" onclick="clickTag('${tag}');">${tag}</button></li>`);
+        // Now add these availableTags as elements of DOM 
+    });
+</script>
