@@ -27,17 +27,17 @@
     }
     function searchDBEntityWithTags(input_id, input_list) {
         let filter = document.getElementById(input_id).value.toUpperCase();
-        let li = document.getElementById(input_list).getElementsByTagName('li');
+        let li = jQuery("#" + input_list).children('li');
 
         // Loop through all list items, and hide those who don't match the search query
         for (let i = 0; i < li.length; i++) {
-            let elemTags = li[i].getAttribute("data-tags")
-            let a = li[i].getElementsByTagName("a")[0];
-            let txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1 && allTagsMatch(elemTags))
-                li[i].style.display = "";
+            let item = jQuery(li[i])
+            let elemTags = item.attr("data-tags")
+            let txt = item.find("[name='summary']").first().text();
+            if (txt.toUpperCase().indexOf(filter) > -1 && allTagsMatch(elemTags))
+                item.get(0).style.display = "";
             else
-                li[i].style.display = "none";
+                item.get(0).style.display = "none";
         }
     }
     function clickTag(tagName) {
