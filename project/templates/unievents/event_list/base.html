@@ -1,13 +1,19 @@
-<a href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
-<a href="{% url "events_list" today.year today.month today.day %}">Day View</a>
-{% comment %} We do not support weekly events just yet {% endcomment %}
-{% comment %} <a href="{% url "events_list" today.year today.month %}">Week View</a> {% endcomment %}
-<a href="{% url "events_list" today.year today.month %}">Month View</a>
-<a href="{% url "events_list" today.year %}">Year View</a>
-<form style="display: inline-block; align-self: end;" method="GET" action="{% url 'events_list' %}">
-    <input type="text" name="summary" placeholder="Search all events, calendars">
-    <button type="submit">Search</button>
-</form>
+
+<div class="content-wrap">
+  <div id="event-view">
+    <a class="view-btn" href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
+    <a class="view-btn" href="{% url "events_list" today.year today.month today.day %}">Day View</a>
+    {% comment %} We do not support weekly events just yet {% endcomment %}
+    {% comment %} <a href="{% url "events_list" today.year today.month %}">Week View</a> {% endcomment %}
+    <a class="view-btn" href="{% url "events_list" today.year today.month %}">Month View</a>
+    <a class="view-btn" href="{% url "events_list" today.year %}">Year View</a>
+
+    <form style="display: inline-block; align-self: end;" method="GET" action="{% url 'events_list' %}">
+        <input type="text" name="summary" placeholder="Search all events, calendars">
+        <button type="submit">Search</button>
+    </form>
+  </div>
+</div>
 <script>
     const clickedTags = new Set()
     const availableTags = new Set()
