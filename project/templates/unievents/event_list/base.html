@@ -52,6 +52,7 @@
         searchDBEntityWithTags('events_input', 'events_list')
     }
     jQuery(document).ready(function () {
+        jQuery('#events_input').keyup(function () {searchDBEntityWithTags('events_input', 'events_list');})
         {% for event in filtered_events %}
             {% for tag in event.formatted_tags.split %}
                 availableTags.add("{{tag}}".replace(",", ""));
