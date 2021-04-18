@@ -1,10 +1,68 @@
-<a href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
-<a href="{% url "events_list" today.year today.month today.day %}">Day View</a>
-{% comment %} We do not support weekly events just yet {% endcomment %}
-{% comment %} <a href="{% url "events_list" today.year today.month %}">Week View</a> {% endcomment %}
-<a href="{% url "events_list" today.year today.month %}">Month View</a>
-<a href="{% url "events_list" today.year %}">Year View</a>
-<form style="display: inline-block; align-self: end;" method="GET" action="{% url 'events_list' %}">
-    <input type="text" name="summary" placeholder="Search all events, calendars">
-    <button type="submit">Search</button>
-</form>
+
+<div class="content-wrap">
+  <div id="event-view">
+    <a class="view-btn" href="{% url "events_list_upcoming" today.year today.month today.day %}">Upcoming</a>
+    <a class="view-btn" href="{% url "events_list" today.year today.month today.day %}">Day View</a>
+    {% comment %} We do not support weekly events just yet {% endcomment %}
+    {% comment %} <a href="{% url "events_list" today.year today.month %}">Week View</a> {% endcomment %}
+    <a class="view-btn" href="{% url "events_list" today.year today.month %}">Month View</a>
+    <a class="view-btn" href="{% url "events_list" today.year %}">Year View</a>
+
+    <form style="display: inline-block; align-self: end;" method="GET" action="{% url 'events_list' %}">
+        <input type="text" name="summary" placeholder="Search all events, calendars">
+        <button type="submit">Search</button>
+    </form>
+  </div>
+</div>
+<script>
+    const clickedTags = new Set()
+    const availableTags = new Set()
+
+    function allTagsMatch(tags) {
+        for (let tag of clickedTags) {
+            if (!tags.includes(tag))
+                return false;
+        }
+        return true;
+    }
+    function searchDBEntityWithTags(input_id, input_list) {
+        let filter = document.getElementById(input_id).value.toUpperCase();
+        let li = jQuery("#" + input_list).children('li');
+
+        // Loop through all list items, and hide those who don't match the search query
+        for (let i = 0; i < li.length; i++) {
+            let item = jQuery(li[i])
+            let elemTags = item.attr("data-tags")
+            let txt = item.find("[name='summary']").first().text();
+            if (txt.toUpperCase().indexOf(filter) > -1 && allTagsMatch(elemTags))
+                item.get(0).style.display = "";
+            else
+                item.get(0).style.display = "none";
+        }
+    }
+    function clickTag(tagName) {
+        if (clickedTags.has(tagName)) {
+            clickedTags.delete(tagName);
+            jQuery(`#${tagName}`).attr("style", "background-color: white;")
+        }
+        else {
+            clickedTags.add(tagName);
+            jQuery(`#${tagName}`).attr("style", "background-color: red;")
+        }
+        searchDBEntityWithTags('events_input', 'events_list')
+    }
+    jQuery(document).ready(function () {
+        jQuery('#events_input').keyup(function () {searchDBEntityWithTags('events_input', 'events_list');})
+        {% for event in filtered_events %}
+            {% for tag in event.formatted_tags.split %}
+                availableTags.add("{{tag}}".replace(",", ""));
+            {% endfor %}
+        {% endfor %}
+        console.log(availableTags)
+        jQuery("body").append("<h2>Tags</h2><ul id='taglist'></ul>")
+        let taglist = jQuery("#taglist")
+        for (let tag of availableTags)
+            taglist.append(`<li><button id="${tag}" style="background-color: white;" onclick="clickTag('${tag}');">${tag}</button></li>`);
+        // Now add these availableTags as elements of DOM 
+    });
+</script>

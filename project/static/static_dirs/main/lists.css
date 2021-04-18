@@ -1,5 +1,5 @@
 /* Box size fix */
-* {
+*, *:before, *:after {
   box-sizing: border-box;
 }
 
@@ -83,6 +83,72 @@ ul li a {
   display: block; /* Make it into a block element to fill the whole list */
 }
 
+.search__list li:first-child {
+  margin-top: 1px;
+}
+
 .search__list li a:hover:not(.header) {
   background-color: #eee; /* Add a hover effect to all links, except for headers */
+}
+
+#event-view {
+  width: 100%;
+  display: flex;
+  margin-top: 50px;
+  justify-content: space-between;
+}
+
+#event-view a {
+  text-decoration: none;
+  padding: 5px;
+  color: black;
+  margin-right: auto;
+}
+
+#event-view a:hover {
+  color: white;
+  background: #bbb;
+}
+
+#event-view form {
+  margin-left: auto;
+}
+
+#events_list {
+  height: 100%;
+  width: 80%;
+}
+
+#events_list li a {
+  display: block;
+  padding: 5px;
+}
+
+#events_list li a p {
+  font-size: 40px;
+  margin: 20px 5px;
+}
+
+#events_list li a div{
+  padding: 0 12px 12px;
+}
+
+#event_area {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100%;
+}
+
+#tag_box {
+  background: #f6f6f6;
+  width: 18%;
+  height: 30vh;
+  overflow-y: auto;
+}
+
+.event-wrap {
+  width: 80%;
+  height: 70vh;
+  margin: auto;
 }
