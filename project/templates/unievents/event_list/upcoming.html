@@ -3,14 +3,14 @@
 {% block content %}
 {% include "unievents/event_list/base.html" %}
 <div class="content-wrap">
-    <h1>Upcoming events</h1>
+    <h1>Upcoming Events</h1>
 
     <input type="text" id="events_input" class="search__bar" onkeyup="searchDBEntity('events_input', 'events_list')" placeholder="Search..">
     <ul id="events_list" class="search__list">
     {% for event in filtered_events %}
-        <li><a href="{% url 'events_view' event.id %}">{{ event.summary }}</a></li>
+      <li><a href="{% url 'events_view' event.id %}"><p>{{event.summary}}</p><div>{{ event.dtstart }}</div><div>{{event.description }}</div></a></li>
     {% empty %}
-        <li>No events found.</li>
+      <li>No events found.</li>
     {% endfor %}
     </ul>
 </div>
