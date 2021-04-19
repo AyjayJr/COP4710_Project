@@ -47,7 +47,7 @@
         }
         else {
             clickedTags.add(tagName);
-            jQuery(`#${tagName}`).attr("style", "background-color: red;")
+            jQuery(`#${tagName}`).attr("style", "background-color: grey; color: white; ")
         }
         searchDBEntityWithTags('events_input', 'events_list')
     }
@@ -59,7 +59,7 @@
             {% endfor %}
         {% endfor %}
         console.log(availableTags)
-        jQuery("body").append("<h2>Tags</h2><ul id='taglist'></ul>")
+      jQuery("#event_area").append("<ul id='taglist'><h2>Tags</h2></ul>")
         let taglist = jQuery("#taglist")
         for (let tag of availableTags)
             taglist.append(`<li><button id="${tag}" style="background-color: white;" onclick="clickTag('${tag}');">${tag}</button></li>`);

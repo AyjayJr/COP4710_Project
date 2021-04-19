@@ -3,13 +3,13 @@
 {% block content %}
 {% include "unievents/event_list/base.html" %}
 <div class="event-wrap">
-    <h1>This Year's Events</h1>
+    <h1>Year View</h1>
 
     <input type="text" id="events_input" class="search__bar" placeholder="Search..">
     <div id="event_area">
       <ul id="events_list" class="search__list">
       {% for event in filtered_events %}
-          <li data-tags="{{event.formatted_tags}}"><a href="{% url 'events_view' event.id %}"><p name="summary">{{event.summary}}</p><div>{{ event.dtstart }}</div><div>{{ event.description }}</div></a></li>
+         <li data-tags="{{event.formatted_tags}}"><a href="{% url 'events_view' event.id %}"><p name="summary">{{event.summary}}</p><div>{{ event.dtstart }}</div><div>{{ event.description }}</div></a></li>
       {% empty %}
           <li>No events found.</li>
       {% endfor %}
